@@ -33,7 +33,6 @@ public class EmprestimosGeloApplicationGUI {
     }
 
     public EmprestimosGeloApplicationGUI() throws SQLException {
-        // Estabelecer a conexão com o banco de dados
         connection = DriverManager.getConnection("jdbc:postgresql://localhost/gelo", "postgres", "fifa16");
     }
 
@@ -125,7 +124,6 @@ public class EmprestimosGeloApplicationGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    // Fechar a conexão antes de sair
                     connection.close();
                 } catch (SQLException ex) {
                     ex.printStackTrace();

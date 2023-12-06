@@ -27,15 +27,12 @@ import java.util.Scanner;
 
 	public static void main(String[] args) {
 		try {
-            // Estabelecer a conexão com o banco de dados
             Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost/gelo", "postgres", "fifa16");
 
-            // Criar um Scanner para a entrada do usuário
             Scanner scanner = new Scanner(System.in);
 
             int escolha;
             do {
-                // Exibir o menu
                 System.out.println("Escolha uma opção:");
                 System.out.println("1. Criar usuário");
                 System.out.println("2. Exibir usuário");
@@ -47,13 +44,11 @@ import java.util.Scanner;
                 System.out.println("8. Excluir Empréstimo");
                 System.out.println("0. Sair");
 
-                // Ler a escolha do usuário
                 escolha = scanner.nextInt();
-                scanner.nextLine(); // Limpar o buffer de entrada
+                scanner.nextLine(); 
 
                 switch (escolha) {
                     case 1:
-                        // Criar um novo usuário
                         System.out.println("Digite o nome do usuário:");
                         String nome = scanner.nextLine();
                         System.out.println("Digite o CPF do usuário:");
@@ -72,7 +67,6 @@ import java.util.Scanner;
                         break;
 
                     case 2:
-                        // Ler e exibir informações do usuário
                         System.out.println("Digite o ID do usuário:");
                         int idLer = scanner.nextInt();
                         Usuarios usuarioLido = readUsuario(connection, idLer);
@@ -80,10 +74,9 @@ import java.util.Scanner;
                         break;
 
                     case 3:
-                        // Atualizar o nome do usuário
                         System.out.println("Digite o ID do usuário a ser atualizado:");
                         int idAtualizar = scanner.nextInt();
-                        scanner.nextLine(); // Limpar o buffer de entrada
+                        scanner.nextLine(); 
                         Usuarios usuarioAtualizar = readUsuario(connection, idAtualizar);
                         if (usuarioAtualizar != null) {
                             System.out.println("Digite o novo nome do usuário:");
@@ -97,21 +90,19 @@ import java.util.Scanner;
                         break;
 
                     case 4:
-                        // Excluir o usuário
                         System.out.println("Digite o ID do usuário a ser excluído:");
                         int idExcluir = scanner.nextInt();
                         deleteUsuario(connection, idExcluir);
                         System.out.println("Usuário excluído com sucesso.");
                         break;
                     case 5:
-                        // Fazer Empréstimo
                         System.out.println("Digite o ID do usuário para o empréstimo:");
                         int usuarioIdEmprestimo = scanner.nextInt();
                         scanner.nextLine();
 
                         System.out.println("Digite o valor inicial do empréstimo:");
                         double valorInicialEmprestimo = scanner.nextDouble();
-                        scanner.nextLine(); // Limpar o buffer de entrada
+                        scanner.nextLine(); 
 
                         System.out.println("Digite a data de vencimento do empréstimo (no formato YYYY-MM-DD):");
                         String dataVencimentoEmprestimoStr = scanner.nextLine();
@@ -123,7 +114,6 @@ import java.util.Scanner;
                         break;
 
                     case 6:
-                        // Exibir Empréstimo
                         System.out.println("Digite o ID do empréstimo:");
                         int idExibirEmprestimo = scanner.nextInt();
                         Emprestimos emprestimoExibir = readEmprestimo(connection, idExibirEmprestimo);
@@ -131,15 +121,14 @@ import java.util.Scanner;
                         break;
 
                     case 7:
-                        // Atualizar Empréstimo
                         System.out.println("Digite o ID do empréstimo a ser atualizado:");
                         int idAtualizarEmprestimo = scanner.nextInt();
-                        scanner.nextLine(); // Limpar o buffer de entrada
+                        scanner.nextLine(); 
                         Emprestimos emprestimoAtualizar = readEmprestimo(connection, idAtualizarEmprestimo);
                         if (emprestimoAtualizar != null) {
                             System.out.println("Digite o novo valor inicial do empréstimo:");
                             double novoValorInicial = scanner.nextDouble();
-                            scanner.nextLine(); // Limpar o buffer de entrada
+                            scanner.nextLine(); 
                             emprestimoAtualizar.setValorInicialEmprestimo(BigDecimal.valueOf(novoValorInicial));
                             updateEmprestimo(connection, emprestimoAtualizar);
                             System.out.println("Empréstimo atualizado com sucesso.");
@@ -149,7 +138,6 @@ import java.util.Scanner;
                         break;
 
                     case 8:
-                        // Excluir Empréstimo
                         System.out.println("Digite o ID do empréstimo a ser excluído:");
                         int idExcluirEmprestimo = scanner.nextInt();
                         deleteEmprestimo(connection, idExcluirEmprestimo);
@@ -157,7 +145,6 @@ import java.util.Scanner;
                         break;    
 
                     case 0:
-                        // Sair do programa
                         System.out.println("Saindo do programa.");
                         break;
 
@@ -167,7 +154,6 @@ import java.util.Scanner;
 
             } while (escolha != 0);
 
-            // Fechar a conexão
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -199,7 +185,6 @@ import java.util.Scanner;
 	    }
 	}
 
-    // Método para ler um usuário por ID
     private static Usuarios readUsuario(Connection connection, int usuarioId) throws SQLException {
         String sql = "SELECT * FROM Usuarios WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -220,7 +205,6 @@ import java.util.Scanner;
         }
     }
 
-    // Método para atualizar um usuário
     private static void updateUsuario(Connection connection, Usuarios usuario) throws SQLException {
         String sql = "UPDATE Usuarios SET nome = ?, cpf = ?, data_nascimento = ?, email = ?, senha = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -235,7 +219,6 @@ import java.util.Scanner;
         }
     }
 
-    // Método para excluir um usuário
     private static void deleteUsuario(Connection connection, int usuarioId) throws SQLException {
         String sql = "DELETE FROM Usuarios WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
