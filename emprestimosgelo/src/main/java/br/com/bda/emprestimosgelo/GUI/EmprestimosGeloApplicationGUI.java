@@ -33,7 +33,7 @@ public class EmprestimosGeloApplicationGUI {
     }
 
     public EmprestimosGeloApplicationGUI() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:postgresql://localhost/gelo", "postgres", "fifa16");
+        connection = DriverManager.getConnection("jdbc:postgresql://localhost/gelo", "postgres", "postgres");
     }
 
     public void start() {
