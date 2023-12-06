@@ -11,12 +11,18 @@ public class Usuarios {
     private String email;
     private String senha;
 
-    
 
-    
+	public Usuarios(int id, String nome, String cpf, Date dataNascimento, String email, String senha) {
+		this.id = id;
+		this.nome = nome;
+		this.cpf = cpf;
+		this.dataNascimento = dataNascimento;
+		this.email = email;
+		this.senha = senha;
+	}
+
 
 	public Usuarios(String nome, String cpf, Date dataNascimento, String email, String senha) {
-		super();
 		this.nome = nome;
 		this.cpf = cpf;
 		this.dataNascimento = dataNascimento;

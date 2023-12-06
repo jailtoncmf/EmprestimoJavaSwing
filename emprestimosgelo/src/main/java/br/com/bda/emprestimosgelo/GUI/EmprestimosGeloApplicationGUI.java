@@ -513,6 +513,7 @@ public class EmprestimosGeloApplicationGUI {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Usuarios(
+                        resultSet.getInt("id"),
                         resultSet.getString("nome"),
                         resultSet.getString("cpf"),
                         resultSet.getDate("data_nascimento"),
