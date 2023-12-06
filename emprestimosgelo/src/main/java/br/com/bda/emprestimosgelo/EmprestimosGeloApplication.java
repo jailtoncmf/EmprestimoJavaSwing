@@ -79,11 +79,10 @@ import java.util.Scanner;
                         scanner.nextLine(); 
                         Usuarios usuarioAtualizar = readUsuario(connection, idAtualizar);
                         if (usuarioAtualizar != null) {
-                            System.out.println("Digite o novo nome do usuário:");
-                            String novoNome = scanner.nextLine();
-                            usuarioAtualizar.setNome(novoNome);
-                            updateUsuario(connection, usuarioAtualizar);
-                            System.out.println("Usuário atualizado com sucesso.");
+                            System.out.println("Digite a nova senha do usuário:");
+                            String novaSenha = scanner.nextLine();
+                            updateUsuario(connection, idAtualizar, novaSenha);
+                            System.out.println("Senha do usuário atualizada com sucesso.");
                         } else {
                             System.out.println("Usuário não encontrado.");
                         }
@@ -205,20 +204,15 @@ import java.util.Scanner;
         }
     }
 
-    private static void updateUsuario(Connection connection, Usuarios usuario) throws SQLException {
-        String sql = "UPDATE Usuarios SET nome = ?, cpf = ?, data_nascimento = ?, email = ?, senha = ? WHERE id = ?";
+    private static void updateUsuario(Connection connection, int usuarioId, String novaSenha) throws SQLException {
+        String sql = "UPDATE Usuarios SET senha = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, usuario.getNome());
-            statement.setString(2, usuario.getCpf());
-            statement.setDate(3, usuario.getDataNascimento());
-            statement.setString(4, usuario.getEmail());
-            statement.setString(5, usuario.getSenha());
-            statement.setInt(6, usuario.getId());
+            statement.setString(1, novaSenha);
+            statement.setInt(2, usuarioId);
 
             statement.executeUpdate();
         }
     }
-
     private static void deleteUsuario(Connection connection, int usuarioId) throws SQLException {
         String sql = "DELETE FROM Usuarios WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {

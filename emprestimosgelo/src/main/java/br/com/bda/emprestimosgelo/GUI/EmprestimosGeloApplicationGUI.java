@@ -42,7 +42,12 @@ public class EmprestimosGeloApplicationGUI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 20));
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        gbc.weighty = 1.0;
+
 
         JButton createUserButton = new JButton("Criar Usuário");
         createUserButton.setPreferredSize(new Dimension(200, 50));
@@ -132,18 +137,35 @@ public class EmprestimosGeloApplicationGUI {
             }
         });
 
-        panel.add(createUserButton);
-        panel.add(createLoanButton);
-        panel.add(readUserButton);
-        panel.add(updateUserButton);
-        panel.add(deleteUserButton);
-        panel.add(readLoanButton);
-        panel.add(updateLoanButton);
-        panel.add(deleteLoanButton);
-        panel.add(exitButton);
+        panel.add(createUserButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(readUserButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(updateUserButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(deleteUserButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(createLoanButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(readLoanButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(updateLoanButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(deleteLoanButton, gbc);
+        panel.add(Box.createVerticalStrut(10), gbc);
+
+        panel.add(exitButton, gbc);
 
         frame.getContentPane().add(panel);
         frame.setVisible(true);
+
     }
 
 
@@ -247,7 +269,7 @@ public class EmprestimosGeloApplicationGUI {
     }
 
     private void updateUsuarioDialog() {
-        JDialog dialog = new JDialog(frame, "Atualizar Usuário", true);
+        JDialog dialog = new JDialog(frame, "Atualizar Senha do Usuário", true);
         dialog.setSize(300, 200);
 
         JTextField usuarioIdField = new JTextField();
@@ -259,13 +281,13 @@ public class EmprestimosGeloApplicationGUI {
                     int usuarioId = Integer.parseInt(usuarioIdField.getText());
                     Usuarios usuarioAtualizar = readUsuario(connection, usuarioId);
                     if (usuarioAtualizar != null) {
-                        String novoNome = JOptionPane.showInputDialog(dialog, "Digite o novo nome do usuário:", usuarioAtualizar.getNome());
-                        if (novoNome != null && !novoNome.isEmpty()) {
-                            usuarioAtualizar.setNome(novoNome);
+                        String novaSenha = JOptionPane.showInputDialog(dialog, "Digite a nova senha do usuário:");
+                        if (novaSenha != null && !novaSenha.isEmpty()) {
+                            usuarioAtualizar.setSenha(novaSenha);
                             updateUsuario(connection, usuarioAtualizar);
-                            JOptionPane.showMessageDialog(dialog, "Usuário atualizado com sucesso.");
+                            JOptionPane.showMessageDialog(dialog, "Senha do usuário atualizada com sucesso.");
                         } else {
-                            JOptionPane.showMessageDialog(dialog, "Nome inválido. Tente novamente.");
+                            JOptionPane.showMessageDialog(dialog, "Senha inválida. Tente novamente.");
                         }
                     } else {
                         JOptionPane.showMessageDialog(dialog, "Usuário não encontrado.");
@@ -273,7 +295,7 @@ public class EmprestimosGeloApplicationGUI {
                     dialog.dispose();
                 } catch (SQLException | NumberFormatException ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(dialog, "Erro ao atualizar usuário. Verifique os dados e tente novamente.");
+                    JOptionPane.showMessageDialog(dialog, "Erro ao atualizar senha do usuário. Verifique os dados e tente novamente.");
                 }
             }
         });
@@ -298,7 +320,9 @@ public class EmprestimosGeloApplicationGUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     int usuarioId = Integer.parseInt(usuarioIdField.getText());
+                    
                     deleteUsuario(connection, usuarioId);
+
                     JOptionPane.showMessageDialog(dialog, "Usuário excluído com sucesso.");
                     dialog.dispose();
                 } catch (SQLException | NumberFormatException ex) {
@@ -421,14 +445,20 @@ public class EmprestimosGeloApplicationGUI {
                     int emprestimoId = Integer.parseInt(emprestimoIdField.getText());
                     Emprestimos emprestimoAtualizar = readEmprestimo(connection, emprestimoId);
                     if (emprestimoAtualizar != null) {
-                        String novoValorInicialStr = JOptionPane.showInputDialog(dialog, "Digite o novo valor inicial do empréstimo:", emprestimoAtualizar.getValorInicialEmprestimo());
-                        if (novoValorInicialStr != null && !novoValorInicialStr.isEmpty()) {
-                            double novoValorInicial = Double.parseDouble(novoValorInicialStr);
-                            emprestimoAtualizar.setValorInicialEmprestimo(BigDecimal.valueOf(novoValorInicial));
+                        String novoValorPagoStr = JOptionPane.showInputDialog(dialog, "Digite o novo valor pago do empréstimo:", emprestimoAtualizar.getValorPago());
+                        String novoValorFaltanteStr = JOptionPane.showInputDialog(dialog, "Digite o novo valor faltante do empréstimo:", emprestimoAtualizar.getValorFaltante());
+
+                        if (novoValorPagoStr != null && !novoValorPagoStr.isEmpty() && novoValorFaltanteStr != null && !novoValorFaltanteStr.isEmpty()) {
+                            BigDecimal novoValorPago = new BigDecimal(novoValorPagoStr);
+                            BigDecimal novoValorFaltante = new BigDecimal(novoValorFaltanteStr);
+
+                            emprestimoAtualizar.setValorPago(novoValorPago);
+                            emprestimoAtualizar.setValorFaltante(novoValorFaltante);
+
                             updateEmprestimo(connection, emprestimoAtualizar);
                             JOptionPane.showMessageDialog(dialog, "Empréstimo atualizado com sucesso.");
                         } else {
-                            JOptionPane.showMessageDialog(dialog, "Valor inicial inválido. Tente novamente.");
+                            JOptionPane.showMessageDialog(dialog, "Valores inválidos. Tente novamente.");
                         }
                     } else {
                         JOptionPane.showMessageDialog(dialog, "Empréstimo não encontrado.");
@@ -441,7 +471,7 @@ public class EmprestimosGeloApplicationGUI {
             }
         });
 
-        JPanel panel = new JPanel(new GridLayout(2, 2));
+        JPanel panel = new JPanel(new GridLayout(3, 2));
         panel.add(new JLabel("ID do Empréstimo:"));
         panel.add(emprestimoIdField);
         panel.add(confirmButton);
@@ -449,7 +479,6 @@ public class EmprestimosGeloApplicationGUI {
         dialog.getContentPane().add(panel);
         dialog.setVisible(true);
     }
-
     private void deleteEmprestimoDialog() {
         JDialog dialog = new JDialog(frame, "Excluir Empréstimo", true);
         dialog.setSize(300, 200);
@@ -541,11 +570,16 @@ public class EmprestimosGeloApplicationGUI {
     }
 
     private static void deleteUsuario(Connection connection, int usuarioId) throws SQLException {
-        String sql = "DELETE FROM Usuarios WHERE id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, usuarioId);
+        String deleteEmprestimosSql = "DELETE FROM Emprestimos WHERE usuario_id = ?";
+        try (PreparedStatement deleteEmprestimosStatement = connection.prepareStatement(deleteEmprestimosSql)) {
+            deleteEmprestimosStatement.setInt(1, usuarioId);
+            deleteEmprestimosStatement.executeUpdate();
+        }
 
-            statement.executeUpdate();
+        String deleteUsuarioSql = "DELETE FROM Usuarios WHERE id = ?";
+        try (PreparedStatement deleteUsuarioStatement = connection.prepareStatement(deleteUsuarioSql)) {
+            deleteUsuarioStatement.setInt(1, usuarioId);
+            deleteUsuarioStatement.executeUpdate();
         }
     }
 
@@ -599,16 +633,11 @@ public class EmprestimosGeloApplicationGUI {
     }
 
     private static void updateEmprestimo(Connection connection, Emprestimos emprestimo) throws SQLException {
-        String sql = "UPDATE Emprestimos SET usuario_id = ?, valor_inicial_emprestimo = ?, valor_pago = ?, valor_faltante = ?, " +
-                "data_vencimento = ?, data_emprestimo = ? WHERE id = ?";
+        String sql = "UPDATE Emprestimos SET valor_pago = ?, valor_faltante = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, emprestimo.getUsuarioId());
-            statement.setBigDecimal(2, emprestimo.getValorInicialEmprestimo());
-            statement.setBigDecimal(3, emprestimo.getValorPago());
-            statement.setBigDecimal(4, emprestimo.getValorFaltante());
-            statement.setDate(5, emprestimo.getDataVencimento());
-            statement.setDate(6, emprestimo.getDataEmprestimo());
-            statement.setInt(7, emprestimo.getId());
+            statement.setBigDecimal(1, emprestimo.getValorPago());
+            statement.setBigDecimal(2, emprestimo.getValorFaltante());
+            statement.setInt(3, emprestimo.getId());
 
             statement.executeUpdate();
         }
